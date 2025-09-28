@@ -1,0 +1,624 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category/>
+        <client_script/>
+        <content><![CDATA[
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Permanent+Marker&family=Playfair+Display:wght@400;600&family=Courier+Prime&family=Reenie+Beanie&display=swap');
+
+    :root {
+        color-scheme: light;
+    }
+
+    .polaroid-generator {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #1f2933;
+        padding: 24px 32px 48px;
+        background: var(--workspace-background, #f5f5f5);
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+
+    .polaroid-generator__header {
+        max-width: 920px;
+        margin: 0 auto 32px;
+        text-align: center;
+    }
+
+    .polaroid-generator__header h1 {
+        font-size: 2.4rem;
+        margin-bottom: 12px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+    }
+
+    .polaroid-generator__header p {
+        margin: 0;
+        color: #52606d;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .polaroid-generator__workspace {
+        display: grid;
+        grid-template-columns: minmax(320px, 360px) minmax(340px, 1fr);
+        gap: 32px;
+        align-items: start;
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .polaroid-generator__controls {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 16px;
+        padding: 24px 24px 32px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+        backdrop-filter: blur(4px);
+        position: sticky;
+        top: 24px;
+        display: grid;
+        gap: 18px;
+        border: 1px solid rgba(15, 23, 42, 0.05);
+    }
+
+    .polaroid-generator__controls h2 {
+        font-size: 1.1rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: #111827;
+        margin: 16px 0 4px;
+    }
+
+    .polaroid-generator__controls h2:first-of-type {
+        margin-top: 0;
+    }
+
+    .field {
+        display: grid;
+        gap: 6px;
+        font-size: 0.95rem;
+    }
+
+    .field span {
+        font-weight: 600;
+        color: #25313d;
+    }
+
+    .field__input {
+        display: flex;
+        gap: 8px;
+    }
+
+    .field__input input[type="url"] {
+        flex: 1;
+    }
+
+    .field--inline {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .field--inline label {
+        flex: 1;
+        display: grid;
+        gap: 6px;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    select,
+    input[type="file"],
+    input[type="color"] {
+        border-radius: 10px;
+        border: 1px solid #cbd2d9;
+        padding: 10px 12px;
+        font-size: 0.95rem;
+        color: #102a43;
+        background: #fff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input[type="color"] {
+        padding: 4px 6px;
+        height: 40px;
+    }
+
+    input[type="text"]:focus,
+    input[type="url"]:focus,
+    select:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    input[type="range"] {
+        width: 100%;
+    }
+
+    output {
+        justify-self: end;
+        font-weight: 600;
+        color: #364152;
+    }
+
+    .button-row {
+        display: flex;
+        gap: 12px;
+        margin-top: 8px;
+    }
+
+    .button {
+        border: none;
+        border-radius: 999px;
+        padding: 10px 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .button--primary {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: #fff;
+        box-shadow: 0 10px 20px rgba(99, 102, 241, 0.25);
+    }
+
+    .button--primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+
+    .button--primary:not(:disabled):hover {
+        transform: translateY(-1px);
+        box-shadow: 0 14px 28px rgba(99, 102, 241, 0.3);
+    }
+
+    .button--secondary {
+        background: #e4e7eb;
+        color: #27303f;
+    }
+
+    .button--secondary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 24px rgba(148, 163, 184, 0.2);
+    }
+
+    .polaroid-generator__preview {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 640px;
+    }
+
+    .preview-stage {
+        position: relative;
+        width: 520px;
+        height: 640px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.3s ease;
+    }
+
+    .preview-stage canvas {
+        width: 100%;
+        height: 100%;
+        border-radius: 18px;
+        background: #fff;
+    }
+
+    .preview-helper {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        font-size: 1rem;
+        color: #7b8794;
+        text-align: center;
+        padding: 0 24px;
+        pointer-events: none;
+    }
+
+    .preview-helper.hidden {
+        opacity: 0;
+    }
+
+    @media (max-width: 1024px) {
+        .polaroid-generator__workspace {
+            grid-template-columns: 1fr;
+        }
+
+        .polaroid-generator__controls {
+            position: static;
+        }
+
+        .polaroid-generator__preview {
+            min-height: auto;
+        }
+    }
+
+    @media (max-width: 620px) {
+        .polaroid-generator {
+            padding: 16px;
+        }
+
+        .preview-stage {
+            width: min(420px, 90vw);
+            height: calc(min(420px, 90vw) * 1.23);
+        }
+    }
+</style>
+<div class="polaroid-generator">
+    <div class="polaroid-generator__header">
+        <h1>Polaroid Photo Image Generator</h1>
+        <p>Create instant-film inspired keepsakes from your favorite images. Customize the frame, caption, colors, and filters, then download a ready-to-share polaroid snapshot.</p>
+    </div>
+
+    <div class="polaroid-generator__workspace">
+        <section class="polaroid-generator__controls">
+            <h2>Image Source</h2>
+            <label class="field">
+                <span>Image URL</span>
+                <div class="field__input">
+                    <input type="url" id="imageUrl" placeholder="https://example.com/photo.jpg"/>
+                    <button id="loadUrl" type="button" class="button">Load</button>
+                </div>
+            </label>
+            <label class="field">
+                <span>Upload image</span>
+                <input type="file" id="imageUpload" accept="image/*"/>
+            </label>
+
+            <h2>Caption</h2>
+            <label class="field">
+                <span>Caption text</span>
+                <input type="text" id="captionText" maxlength="60" placeholder="Summer getaway"/>
+            </label>
+            <label class="field">
+                <span>Font style</span>
+                <select id="captionFont">
+                    <option value="'Permanent Marker', cursive">Permanent Marker</option>
+                    <option value="'Kalam', cursive">Kalam</option>
+                    <option value="'Reenie Beanie', cursive">Reenie Beanie</option>
+                    <option value="'Courier Prime', monospace">Courier Prime</option>
+                    <option value="'Playfair Display', serif">Playfair Display</option>
+                </select>
+            </label>
+            <label class="field">
+                <span>Font size</span>
+                <input type="range" id="captionSize" min="16" max="48" value="28"/>
+                <output for="captionSize" id="captionSizeOutput">28 px</output>
+            </label>
+            <label class="field">
+                <span>Caption color</span>
+                <input type="color" id="captionColor" value="#2d2d2d"/>
+            </label>
+
+            <h2>Frame</h2>
+            <div class="field field--inline">
+                <label>
+                    <span>Frame color</span>
+                    <input type="color" id="frameColor" value="#ffffff"/>
+                </label>
+                <label>
+                    <span>Background</span>
+                    <input type="color" id="pageBackground" value="#f5f5f5"/>
+                </label>
+            </div>
+            <label class="field">
+                <span>Shadow depth</span>
+                <input type="range" id="shadowDepth" min="5" max="40" value="18"/>
+                <output for="shadowDepth" id="shadowDepthOutput">18 px</output>
+            </label>
+            <label class="field">
+                <span>Rotation</span>
+                <input type="range" id="rotation" min="-15" max="15" value="-4" step="0.5"/>
+                <output for="rotation" id="rotationOutput">-4°</output>
+            </label>
+
+            <h2>Image adjustments</h2>
+            <label class="field">
+                <span>Zoom</span>
+                <input type="range" id="zoom" min="60" max="140" value="100"/>
+                <output for="zoom" id="zoomOutput">100%</output>
+            </label>
+            <label class="field">
+                <span>Brightness</span>
+                <input type="range" id="brightness" min="50" max="150" value="100"/>
+                <output for="brightness" id="brightnessOutput">100%</output>
+            </label>
+            <label class="field">
+                <span>Contrast</span>
+                <input type="range" id="contrast" min="50" max="150" value="105"/>
+                <output for="contrast" id="contrastOutput">105%</output>
+            </label>
+            <label class="field">
+                <span>Saturation</span>
+                <input type="range" id="saturation" min="50" max="200" value="120"/>
+                <output for="saturation" id="saturationOutput">120%</output>
+            </label>
+
+            <div class="button-row">
+                <button id="resetButton" type="button" class="button button--secondary">Reset</button>
+                <button id="downloadButton" type="button" class="button button--primary" disabled>Download PNG</button>
+            </div>
+        </section>
+
+        <section class="polaroid-generator__preview">
+            <div class="preview-stage" id="previewStage">
+                <canvas id="polaroidCanvas" width="520" height="640" aria-label="Polaroid preview canvas"></canvas>
+                <p class="preview-helper" id="previewHelper">Load an image to preview your polaroid.</p>
+            </div>
+        </section>
+    </div>
+</div>
+<script>
+    (function () {
+        'use strict';
+
+        const canvas = document.getElementById('polaroidCanvas');
+        const ctx = canvas.getContext('2d');
+        const previewStage = document.getElementById('previewStage');
+        const previewHelper = document.getElementById('previewHelper');
+        const downloadButton = document.getElementById('downloadButton');
+        const resetButton = document.getElementById('resetButton');
+        const imageUpload = document.getElementById('imageUpload');
+        const loadUrlButton = document.getElementById('loadUrl');
+        const imageUrlInput = document.getElementById('imageUrl');
+        const pageBackgroundInput = document.getElementById('pageBackground');
+
+        const inputs = {
+            captionText: document.getElementById('captionText'),
+            captionFont: document.getElementById('captionFont'),
+            captionSize: document.getElementById('captionSize'),
+            captionColor: document.getElementById('captionColor'),
+            frameColor: document.getElementById('frameColor'),
+            shadowDepth: document.getElementById('shadowDepth'),
+            rotation: document.getElementById('rotation'),
+            zoom: document.getElementById('zoom'),
+            brightness: document.getElementById('brightness'),
+            contrast: document.getElementById('contrast'),
+            saturation: document.getElementById('saturation')
+        };
+
+        const outputs = {
+            captionSize: document.getElementById('captionSizeOutput'),
+            shadowDepth: document.getElementById('shadowDepthOutput'),
+            rotation: document.getElementById('rotationOutput'),
+            zoom: document.getElementById('zoomOutput'),
+            brightness: document.getElementById('brightnessOutput'),
+            contrast: document.getElementById('contrastOutput'),
+            saturation: document.getElementById('saturationOutput')
+        };
+
+        const state = {
+            image: null,
+            imageNaturalWidth: 0,
+            imageNaturalHeight: 0
+        };
+
+        function updateOutputs() {
+            outputs.captionSize.textContent = inputs.captionSize.value + ' px';
+            outputs.shadowDepth.textContent = inputs.shadowDepth.value + ' px';
+            outputs.rotation.textContent = inputs.rotation.value + '°';
+            outputs.zoom.textContent = inputs.zoom.value + '%';
+            outputs.brightness.textContent = inputs.brightness.value + '%';
+            outputs.contrast.textContent = inputs.contrast.value + '%';
+            outputs.saturation.textContent = inputs.saturation.value + '%';
+        }
+
+        function clearCanvasWithFrame(width, height, frameColor, shadowDepth) {
+            const paddedWidth = width + shadowDepth * 2;
+            const paddedHeight = height + shadowDepth * 2;
+            canvas.width = paddedWidth;
+            canvas.height = paddedHeight;
+
+            ctx.save();
+            ctx.clearRect(0, 0, paddedWidth, paddedHeight);
+            ctx.translate(shadowDepth, shadowDepth);
+            ctx.shadowColor = 'rgba(15, 23, 42, 0.35)';
+            ctx.shadowBlur = shadowDepth;
+            ctx.shadowOffsetX = shadowDepth * 0.2;
+            ctx.shadowOffsetY = shadowDepth * 0.4;
+            ctx.fillStyle = frameColor;
+            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
+        }
+
+        function drawPlaceholder() {
+            clearCanvasWithFrame(420, 520, '#ffffff', Number(inputs.shadowDepth.value));
+
+            ctx.save();
+            ctx.translate(Number(inputs.shadowDepth.value), Number(inputs.shadowDepth.value));
+            ctx.fillStyle = '#e4e7eb';
+            ctx.fillRect(36, 36, canvas.width - 72 - Number(inputs.shadowDepth.value) * 2, 320);
+            ctx.fillStyle = '#d2d6dc';
+            ctx.font = '700 20px "Segoe UI", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Awaiting Photo', (canvas.width - Number(inputs.shadowDepth.value) * 2) / 2, 200);
+            ctx.restore();
+        }
+
+        function render() {
+            updateOutputs();
+
+            const frameColor = inputs.frameColor.value;
+            const caption = inputs.captionText.value.trim() || 'Untitled Adventure';
+            const captionSize = Number(inputs.captionSize.value);
+            const shadowDepth = Number(inputs.shadowDepth.value);
+
+            if (!state.image) {
+                drawPlaceholder();
+                previewHelper.classList.remove('hidden');
+                downloadButton.disabled = true;
+                return;
+            }
+
+            const maxPhotoWidth = 420;
+            const maxPhotoHeight = 380;
+            const zoomScale = Number(inputs.zoom.value) / 100;
+            const baseScale = Math.min(maxPhotoWidth / state.imageNaturalWidth, maxPhotoHeight / state.imageNaturalHeight);
+            const finalScale = baseScale * zoomScale;
+
+            const photoWidth = state.imageNaturalWidth * finalScale;
+            const photoHeight = state.imageNaturalHeight * finalScale;
+            const frameWidth = photoWidth + 72;
+            const frameHeight = photoHeight + 150;
+
+            clearCanvasWithFrame(frameWidth, frameHeight, frameColor, shadowDepth);
+
+            ctx.save();
+            ctx.translate(shadowDepth, shadowDepth);
+            ctx.fillStyle = frameColor;
+            ctx.fillRect(0, 0, frameWidth, frameHeight);
+
+            const photoX = (frameWidth - photoWidth) / 2;
+            const photoY = 36;
+
+            ctx.filter = `brightness(${inputs.brightness.value}%) contrast(${inputs.contrast.value}%) saturate(${inputs.saturation.value}%)`;
+            ctx.drawImage(state.image, photoX, photoY, photoWidth, photoHeight);
+            ctx.filter = 'none';
+
+            ctx.fillStyle = inputs.captionColor.value;
+            ctx.font = `600 ${captionSize}px ${inputs.captionFont.value}`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(caption, frameWidth / 2, photoY + photoHeight + (frameHeight - photoY - photoHeight) / 2);
+            ctx.restore();
+
+            previewHelper.classList.add('hidden');
+            downloadButton.disabled = false;
+        }
+
+        function loadImageFromSource(src) {
+            if (!src) {
+                return;
+            }
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = function () {
+                state.image = img;
+                state.imageNaturalWidth = img.naturalWidth;
+                state.imageNaturalHeight = img.naturalHeight;
+                render();
+            };
+            img.onerror = function () {
+                alert('Unable to load the image. Please verify the URL or upload a different file.');
+            };
+            img.src = src;
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) {
+                return;
+            }
+            if (!file.type.startsWith('image/')) {
+                alert('Please select a valid image file.');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function (loadEvent) {
+                loadImageFromSource(loadEvent.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function downloadCanvas() {
+            const link = document.createElement('a');
+            link.download = `polaroid-${Date.now()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function resetControls() {
+            inputs.captionText.value = '';
+            inputs.captionFont.value = "'Permanent Marker', cursive";
+            inputs.captionSize.value = 28;
+            inputs.captionColor.value = '#2d2d2d';
+            inputs.frameColor.value = '#ffffff';
+            inputs.shadowDepth.value = 18;
+            inputs.rotation.value = -4;
+            inputs.zoom.value = 100;
+            inputs.brightness.value = 100;
+            inputs.contrast.value = 105;
+            inputs.saturation.value = 120;
+            pageBackgroundInput.value = '#f5f5f5';
+            document.documentElement.style.setProperty('--workspace-background', '#f5f5f5');
+            state.image = null;
+            state.imageNaturalWidth = 0;
+            state.imageNaturalHeight = 0;
+            previewStage.style.transform = 'rotate(-4deg)';
+            render();
+        }
+
+        function handleBackgroundChange() {
+            const color = pageBackgroundInput.value;
+            document.documentElement.style.setProperty('--workspace-background', color);
+        }
+
+        Object.values(inputs).forEach(function (input) {
+            input.addEventListener('input', function () {
+                updateOutputs();
+                render();
+            });
+        });
+
+        pageBackgroundInput.addEventListener('input', function () {
+            handleBackgroundChange();
+        });
+
+        inputs.rotation.addEventListener('input', function () {
+            const rotationValue = Number(inputs.rotation.value);
+            previewStage.style.transform = `rotate(${rotationValue}deg)`;
+        });
+
+        imageUpload.addEventListener('change', handleFileUpload);
+
+        loadUrlButton.addEventListener('click', function () {
+            if (!imageUrlInput.value) {
+                alert('Please provide an image URL.');
+                return;
+            }
+            loadImageFromSource(imageUrlInput.value.trim());
+        });
+
+        resetButton.addEventListener('click', resetControls);
+        downloadButton.addEventListener('click', downloadCanvas);
+
+        drawPlaceholder();
+        previewStage.style.transform = `rotate(${inputs.rotation.value}deg)`;
+        handleBackgroundChange();
+        updateOutputs();
+    })();
+</script>
+        ]]></content>
+        <description>Create a polaroid-styled image from an uploaded photo.</description>
+        <docs/>
+        <html/>
+        <internal>false</internal>
+        <name>polaroid_generator</name>
+        <processing_script/>
+        <roles/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2017-01-26 21:55:52</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>f1d9f2bd0fa03200cd674f8ce1050aaa</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>polaroid_generator</sys_name>
+        <sys_package display_value="NeedIt" source="x_58872_needit">6ead8e780f603200cd674f8ce1050ed1</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="NeedIt">6ead8e780f603200cd674f8ce1050ed1</sys_scope>
+        <sys_update_name>sys_ui_page_f1d9f2bd0fa03200cd674f8ce1050aaa</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2017-01-26 21:55:52</sys_updated_on>
+        <url_suffix/>
+    </sys_ui_page>
+</record_update>
